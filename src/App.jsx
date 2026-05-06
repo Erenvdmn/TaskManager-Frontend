@@ -4,6 +4,7 @@ import Departments from './components/Departments';
 import Users from './components/Users';
 import UserTasks from './components/UserTasks';
 
+
 function App() {
   const [currentView, setCurrentView] = useState('departments'); 
   const [selectedDept, setSelectedDept] = useState(null);
@@ -46,7 +47,7 @@ function App() {
           <>
             <span style={{ margin: '0 10px', color: '#666' }}>/</span>
             <span style={{ color: 'white' }}>
-              👤 {selectedUser.fullName} (Görevleri)
+              {selectedUser.fullName} (Görevleri)
             </span>
           </>
         )}

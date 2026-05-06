@@ -4,6 +4,7 @@ export default function Users({ department, onSelectUser }) {
     const [users, setUsers] = useState([]);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
+    const [position, setPosition] = useState('');
     const [refreshTick, setRefreshTick] = useState(0);
 
     const API_URL = 'https://localhost:7152/api/user';
@@ -19,14 +20,14 @@ export default function Users({ department, onSelectUser }) {
 
     const handleAdd = async (e) => {
         e.preventDefault();
-        const newUser = { fullName, email, departmentId: department.id }; 
+        const newUser = { fullName, email, position, departmentId: department.id }; 
 
         await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newUser)
         });
-        setFullName(''); setEmail('');
+        setFullName(''); setEmail(''); setPosition('');
         setRefreshTick(prev => prev + 1);
     };
 
@@ -41,7 +42,9 @@ export default function Users({ department, onSelectUser }) {
         <div>
             <form onSubmit={handleAdd} style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
                 <input type="text" placeholder="Ad Soyad" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-                <input type="email" placeholder="E-posta (Pozisyon niyetine)" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <input type="email" placeholder="E-posta" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <input type="text" placeholder="Pozisyon" value={position} onChange={(e) => setPosition(e.target.value)} required />
+
                 <button type="submit" style={{ backgroundColor: '#008CBA', color: 'white', border: 'none', padding: '10px' }}>+ Personel Ekle</button>
             </form>
 
@@ -54,6 +57,7 @@ export default function Users({ department, onSelectUser }) {
                     >
                         <h3 style={{ margin: '0 0 10px 0' }}>{user.fullName}</h3>
                         <p style={{ margin: '0', fontSize: '0.9em', color: '#aaa' }}>{user.email}</p>
+                        <p style={{ margin: '0', fontSize: '0.9em', color: '#aaa' }}>{user.position}</p>
                         
                         <button 
                             onClick={(e) => handleDelete(e, user.id)}

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import ApiRequest from '../helpers/ApiManager';
+import '../styles/Departments.css';
 
 export default function Departments({ onSelectDepartment }) {
     const [departments, setDepartments] = useState([]);
@@ -6,24 +8,24 @@ export default function Departments({ onSelectDepartment }) {
     const [description, setDescription] = useState('');
     const [refreshTick, setRefreshTick] = useState(0); 
 
-    const API_URL = 'https://localhost:7152/api/department';
-
     useEffect(() => {
         const fetchDepartments = async () => {
-            const response = await fetch(API_URL);
-            setDepartments(await response.json());
+            const response = await ApiRequest('api/department', 'GET');
+            if (response && response.ok) {
+                const data = await response.json();
+                setDepartments(data);
+            }
         };
         fetchDepartments();
     }, [refreshTick]);
 
     const handleAdd = async (e) => {
         e.preventDefault();
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, description })
-        });
-        setName(''); setDescription('');
+        
+        await ApiRequest('api/department', 'POST', { name, description });
+        
+        setName(''); 
+        setDescription('');
         setRefreshTick(prev => prev + 1); 
     };
 
@@ -31,34 +33,35 @@ export default function Departments({ onSelectDepartment }) {
         e.stopPropagation();
         if(!window.confirm("Departmanı silmek istediğine emin misin?")) return;
         
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        await ApiRequest(`api/department/${id}`, 'DELETE');
         setRefreshTick(prev => prev + 1);
     };
 
     return (
         <div>
-            <form onSubmit={handleAdd} style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+            <form onSubmit={handleAdd} className="add-form">
                 <input type="text" placeholder="Departman Adı" value={name} onChange={(e) => setName(e.target.value)} required />
                 <input type="text" placeholder="Açıklama" value={description} onChange={(e) => setDescription(e.target.value)} />
-                <button type="submit" style={{ backgroundColor: '#4CAF50', color: 'white', border: 'none', padding: '10px' }}>+ Departman Ekle</button>
+                <button type="submit" className="btn-add">+ Departman Ekle</button>
             </form>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+            <div className="departments-grid">
                 {departments.map(dept => (
                     <div 
                         key={dept.id} 
                         onClick={() => onSelectDepartment(dept)}
-                        style={{ padding: '20px', border: '1px solid #555', borderRadius: '8px', cursor: 'pointer', backgroundColor: '#2a2a2a', position: 'relative' }}
+                        className="department-card"
                     >
-                        <h3 style={{ margin: '0 0 10px 0' }}>{dept.name}</h3>
-                        <p style={{ margin: '0', fontSize: '0.9em', color: '#aaa' }}>{dept.description}</p>
-                        <div style={{ marginTop: '15px', fontSize: '0.8em', color: '#888' }}>
+                        <h3>{dept.name}</h3>
+                        <p className="desc">{dept.description}</p>
+                        <div className="personnel-count">
                             {dept.users?.length || 0} Personel
                         </div>
                         
                         <button 
                             onClick={(e) => handleDelete(e, dept.id)}
-                            style={{ position: 'absolute', top: '10px', right: '10px', background: 'red', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                            className="btn-delete"
+                        >
                             Sil
                         </button>
                     </div>

@@ -6,7 +6,7 @@ export default function UserTasks({ user }) {
     const [description, setDescription] = useState('');
     const [refreshTick, setRefreshTick] = useState(0);
 
-    const API_URL = 'https://localhost:7152/api/task';
+    const API_URL = 'http://localhost:7152/api/task';
 
     useEffect(() => {
         const fetchTasks = async () => {

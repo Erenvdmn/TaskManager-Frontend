@@ -1,5 +1,5 @@
 const API_Address = "172.25.48.1";
-const API_Domain = `http://${API_Address}:5294`;
+const API_Domain = `http://${API_Address}:7152`;
 
 export default async function ApiRequest(endpoint, method, body=null, isFormData=false) {
     try {
